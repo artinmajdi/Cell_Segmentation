@@ -9,8 +9,8 @@ import nibabel as nib
 from tf_unet import unet, util, image_util
 
 path = '/media/data1/artin/data/Cell/'
-TrainPath = path + 'Data/train/'
-TestPath  = path + 'Data/test/'
+TrainPath = f'{path}Data/train/'
+TestPath = f'{path}Data/test/'
 
 net = unet.Unet(layers=4, features_root=16, channels=1, n_class=2)
 

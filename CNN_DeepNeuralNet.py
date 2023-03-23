@@ -93,7 +93,7 @@ def ReadingData(traintSize):
             A_test = Data[TestIndexes[K:] , : , :]
             L_test = Label[TestIndexes[K:] , :]
 
-        if j == 1:
+        elif j == 1:
             A2_train = Data[TestIndexes[:K] , : , :]
             L2_train = Label[TestIndexes[:K] , :]
 
@@ -137,7 +137,7 @@ def BatchesList(num_TrainData,batch_size):
 
     NumBatches = int(num_TrainData/batch_size)
     List = []
-    for ind in range(0,NumBatches+1):
+    for ind in range(NumBatches+1):
         List = np.append(List,np.array(batch_size)*ind)
 
     if num_TrainData > batch_size*NumBatches:
@@ -232,7 +232,7 @@ def train_neural_network(x):
             print('Epoch',epoch+1,'completed out of',hm_epochs,'loss:',epoch_loss)
 
         save_path = saver.save(sess, Directory+'model' + '/model.ckpt')
-        print("Model saved in file: %s" % save_path)
+        print(f"Model saved in file: {save_path}")
 
         correct = tf.equal(tf.argmax(prediction,1),tf.argmax(y,1))
         A = tf.cast(correct,'float')
@@ -344,7 +344,7 @@ def train_neural_networkANDpreLastLayereSaver(x):
             print('Epoch',epoch+1,'completed out of',hm_epochs,'loss:',epoch_loss)
 
         save_path = saver.save(sess, Directory + 'model/model.ckpt')
-        print("Model saved in file: %s" % save_path)
+        print(f"Model saved in file: {save_path}")
 
         correct = tf.equal(tf.argmax(prediction,1),tf.argmax(y,1))
         A = tf.cast(correct,'float')
@@ -403,9 +403,9 @@ def train_neural_networkANDpreLastLayereSaver(x):
         np.savez(Directory+'model' + '/fcTestData',tuple(fcTestData))
         np.savez(Directory+'model' + '/fcTestLabel', tuple(fcTestLabel))
 
-        # for i in range(TestLabel.shape[0]):
-        #     p_label = sess.run([predicted_label], feed_dict = {x: [TestData[i]]})
-        #     print(i, 'actual label:', np.where(TestLabel[i]>0)[0][0], 'predicted label:', np.where(p_label[0] > 0))
+            # for i in range(TestLabel.shape[0]):
+            #     p_label = sess.run([predicted_label], feed_dict = {x: [TestData[i]]})
+            #     print(i, 'actual label:', np.where(TestLabel[i]>0)[0][0], 'predicted label:', np.where(p_label[0] > 0))
     return cnnAccuracy, fcTrainData, fcTrainLabel , fcTestData, fcTestLabel
 
 def loadFClayer():
