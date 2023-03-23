@@ -17,14 +17,14 @@ from PIL import Image
 
 path = '/media/data1/artin/data/Cell/'
 try:
-    os.stat(path + 'Data/train/')
+    os.stat(f'{path}Data/train/')
 except:
-    os.makedirs(path + 'Data/train/')
+    os.makedirs(f'{path}Data/train/')
 
 try:
-    os.stat(path + 'Data/test/')
+    os.stat(f'{path}Data/test/')
 except:
-    os.makedirs(path + 'Data/test/')
+    os.makedirs(f'{path}Data/test/')
 
 
 def load_image(path):

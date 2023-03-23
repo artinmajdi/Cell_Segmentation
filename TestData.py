@@ -8,16 +8,15 @@ eps = np.finfo(float).eps
 
 def DiceCoefficientCalculator(msk1,msk2):
     intersection = np.logical_and(msk1,msk2)
-    DiceCoef = intersection.sum()*2/(msk1.sum()+msk2.sum())
-    return DiceCoef
+    return intersection.sum()*2/(msk1.sum()+msk2.sum())
 
 
 def TestData(net , Test_Path , Train_Path , padSize):
 
     TestImageNum = 7
 
-    Trained_Model_Path = Train_Path + 'model/model.cpkt'
-    TestResults_Path   = Test_Path  + 'results/'
+    Trained_Model_Path = f'{Train_Path}model/model.cpkt'
+    TestResults_Path = f'{Test_Path}results/'
 
     try:
         os.stat(TestResults_Path)
@@ -29,7 +28,9 @@ def TestData(net , Test_Path , Train_Path , padSize):
 
     trainer = unet.Trainer(net)
 
-    TestData = image_util.ImageDataProvider(  Test_Path + '*.tif' , shuffle_data=False)
+    TestData = image_util.ImageDataProvider(
+        f'{Test_Path}*.tif', shuffle_data=False
+    )
 
     L = len(TestData.data_files)
     DiceCoefficient  = np.zeros(L)
@@ -92,21 +93,24 @@ def TestData(net , Test_Path , Train_Path , padSize):
         A = (padSize/2)
         imgCombined = util.combine_img_prediction(data, label, prediction)
         DiceCoefficient[BB_ind] = DiceCoefficientCalculator(PredictedSeg,label[0,A:sz[1]-A,A:sz[2]-A,1])  # 20 is for zero padding done for input
-        util.save_image(imgCombined, TestResults_Path+"prediction_slice"+ str(BB_Cord[BB_ind]) + ".jpg")
+        util.save_image(
+            imgCombined,
+            f"{TestResults_Path}prediction_slice{str(BB_Cord[BB_ind])}.jpg",
+        )
 
 
         Loss = unet.error_rate(prediction,label[:,A:sz[1]-A,A:sz[2]-A,:])
         LogLoss[BB_ind] = np.log10(Loss+eps)
 
-    np.savetxt(TestResults_Path+'DiceCoefficient.txt',DiceCoefficient)
-    np.savetxt(TestResults_Path+'LogLoss.txt',LogLoss)
+    np.savetxt(f'{TestResults_Path}DiceCoefficient.txt', DiceCoefficient)
+    np.savetxt(f'{TestResults_Path}LogLoss.txt', LogLoss)
 
 
     im = Image.fromarray(np.uint8(AllImage))
     msk = Image.fromarray(np.uint8(AllImage_logical))
 
-    im.save( TestResults_Path + 'PredictionSeg_'+str(TestImageNum)+'.tif')
-    msk.save(TestResults_Path + 'PredictionSeg_'+str(TestImageNum)+'_Logical.tif')
+    im.save(f'{TestResults_Path}PredictionSeg_{TestImageNum}.tif')
+    msk.save(f'{TestResults_Path}PredictionSeg_{TestImageNum}_Logical.tif')
 
 
     return AllImage , AllImage_logical
@@ -115,12 +119,14 @@ def TestData(net , Test_Path , Train_Path , padSize):
 def ThalamusExtraction(net , Test_Path , Train_Path , subFolders, CropDim , padSize):
 
 
-    Trained_Model_Path = Train_Path + 'model/model.cpkt'
+    Trained_Model_Path = f'{Train_Path}model/model.cpkt'
 
 
     trainer = unet.Trainer(net)
 
-    TestData = image_util.ImageDataProvider(  Test_Path + '*.tif',shuffle_data=False)
+    TestData = image_util.ImageDataProvider(
+        f'{Test_Path}*.tif', shuffle_data=False
+    )
 
     L = len(TestData.data_files)
     DiceCoefficient  = np.zeros(L)
